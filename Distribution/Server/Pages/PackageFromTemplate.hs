@@ -92,7 +92,7 @@ packagePageTemplate render
   , "downloadSection"     $= Old.downloadSection render
   , "stability"           $= renderStability desc
   , "packageIsDeprecated" $= (if deprs == Nothing then False else True)
-  , "versionIsDeprecated" $= (versionStatus == Just DeprecatedVersion)
+  , "versionIsDeprecated" $= (mversionStatus == Just DeprecatedVersion)
   , "deprecatedMsg"       $= (deprHtml deprs)
   ]
   where
