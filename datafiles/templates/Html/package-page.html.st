@@ -24,10 +24,14 @@
       [ <a href="/package/$package.name$/tags/edit">Propose Tags </a> ]
     </div>
 
-    $if(isDeprecated)$
-    <div id="deprecated">
-      Deprecated.
+    $if(packageIsDeprecated)$
+    <div id="deprecated" class="deprecated package-deprecated">
+      This package is deprecated.
       $deprecatedMsg$
+    </div>
+    $elseif(versionIsDeprecated)$
+    <div class="deprecated version-deprecated">
+      This version is deprecated. Consider selecting a preferred version.
     </div>
     $endif$
 

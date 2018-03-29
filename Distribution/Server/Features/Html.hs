@@ -617,7 +617,8 @@ mkHtmlCore ServerEnv{serverBaseURI, serverBlobStore}
 
         let infoUrl = fmap (\_ -> preferredPackageUri versions "" pkgname) $
               sumRange prefInfo
-
+            allVersions = classifyVersions prefInfo $ map packageVersion pkgs
+            mversionStatus = lookup (pkgVersion realpkg) allVersions
         -- Put it all together
         template <- getTemplate templates "package-page.html"
         cacheControlWithoutETag [Public, maxAgeMinutes 5]
@@ -627,8 +628,7 @@ mkHtmlCore ServerEnv{serverBaseURI, serverBlobStore}
           [ "baseurl"           $= show (serverBaseURI { URI.uriScheme = "" })
           , "cabalVersion"      $= display cabalVersion
           , "tags"              $= (renderTags tags)
-          , "versions"          $= (PagesNew.renderVersion realpkg
-              (classifyVersions prefInfo $ map packageVersion pkgs) infoUrl)
+          , "versions"          $= (PagesNew.renderVersion realpkg allVersions infoUrl)
           , "totalDownloads"    $= totalDown
           , "hasexecs"          $= not (null execs)
           , "recentDownloads"   $= recentDown
@@ -644,6 +644,7 @@ mkHtmlCore ServerEnv{serverBaseURI, serverBlobStore}
             docURL distributions
             deprs
             utilities
+            mversionStatus
 
     serveDependenciesPage :: DynamicPath -> ServerPartE Response
     serveDependenciesPage dpath = do
