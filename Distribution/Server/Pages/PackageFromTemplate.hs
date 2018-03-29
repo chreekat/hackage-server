@@ -74,24 +74,26 @@ packagePageTemplate :: PackageRender
             -> URL -> [(DistroName, DistroPackageInfo)]
             -> Maybe [PackageName]
             -> HtmlUtilities
+            -> Maybe VersionStatus
             -> [TemplateAttr]
 packagePageTemplate render
             mdocIndex mdocMeta mreadme
             docURL distributions
-            deprs utilities =
+            deprs utilities mversionStatus =
   -- The main two namespaces
-  [ "package"           $= packageFieldsTemplate
-  , "hackage"           $= hackageFieldsTemplate
-  , "doc"               $= docFieldsTemplate
+  [ "package"             $= packageFieldsTemplate
+  , "hackage"             $= hackageFieldsTemplate
+  , "doc"                 $= docFieldsTemplate
   ] ++
 
   -- Miscellaneous things that could still stand to be refactored a bit.
-  [ "moduleList"        $= Old.moduleSection render mdocIndex docURL hasQuickNav
-  , "executables"       $= (commaList . map toHtml $ rendExecNames render)
-  , "downloadSection"   $= Old.downloadSection render
-  , "stability"         $= renderStability desc
-  , "isDeprecated"      $= (if deprs == Nothing then False else True)
-  , "deprecatedMsg"     $= (deprHtml deprs)
+  [ "moduleList"          $= Old.moduleSection render mdocIndex docURL hasQuickNav
+  , "executables"         $= (commaList . map toHtml $ rendExecNames render)
+  , "downloadSection"     $= Old.downloadSection render
+  , "stability"           $= renderStability desc
+  , "packageIsDeprecated" $= (if deprs == Nothing then False else True)
+  , "versionIsDeprecated" $= (mversionStatus == Just DeprecatedVersion)
+  , "deprecatedMsg"       $= (deprHtml deprs)
   ]
   where
     -- Access via "$hackage.varName$"

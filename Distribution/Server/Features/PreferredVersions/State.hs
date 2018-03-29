@@ -118,6 +118,8 @@ setDeprecatedFor name forName = modify $ \p -> p { deprecatedMap = Map.alter (co
 getDeprecatedFor :: PackageName -> Query PreferredVersions (Maybe [PackageName])
 getDeprecatedFor name = asks $ Map.lookup name . deprecatedMap
 
+-- | This Bool refers to package deprecation, not version deprecation. Keeping
+-- name as is in case it affects acid-state.
 isDeprecated :: PackageName -> Query PreferredVersions Bool
 isDeprecated name = asks $ Map.member name . deprecatedMap
 
